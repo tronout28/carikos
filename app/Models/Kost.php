@@ -8,6 +8,7 @@ class Kost extends Model
 {
     protected $fillable = [
         'name',
+        'owner',
         'user_id',
         'price',
         'phone_number',
@@ -27,6 +28,6 @@ class Kost extends Model
 
     public function universities()
     {
-        return $this->belongsToMany(University::class, 'university_kost', 'kost_id', 'university_id');
+        return $this->belongsToMany(University::class, 'university_kosts', 'kost_id', 'university_id');
     }
 }

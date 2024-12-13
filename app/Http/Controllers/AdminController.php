@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
-use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function Registerasadmin(Request $request)
@@ -22,6 +21,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'phone_number' => $request->phone_number,
+            'role' => 'admin',
         ]);
 
         $admin->save();
@@ -32,31 +32,32 @@ class AdminController extends Controller
     }
 
     public function Login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'phone_number' => 'required|string',
-            'password' => 'required|string',
-        ]);
+{
+    // Validasi input
+    $request->validate([
+        'email' => 'required|email',
+        'phone_number' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        $credentials = request(['email', 'phone_number', 'password']);
+    $admin = Admin::where('email', $request->email)
+                  ->where('phone_number', $request->phone_number)
+                  ->first();
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 401);
-        }
-
-        $admin = $request->admin();
-
-        $token = $admin->createToken('auth_token')->plainTextToken;
-
+    if (!$admin || !Hash::check($request->password, $admin->password)) {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'admin' => $admin,
-        ]);
+            'message' => 'Unauthorized',
+        ], 401);
     }
+
+    $token = $admin->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+        'admin' => $admin,
+    ]);
+}
 
     public function forgotpassword(Request $request)
     {
