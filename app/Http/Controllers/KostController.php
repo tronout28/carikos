@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Kost;
 use App\Models\UniversityKost;
 use App\Models\University;
+use Illuminate\Support\Facades\Auth;
 
 
 class KostController extends Controller
@@ -13,8 +14,17 @@ class KostController extends Controller
 
     public function insertkost(Request $request)
     {
-      $request->validate([
-            'user_id' => 'required|integer',
+        $user = Auth::user();  
+
+        // Debug: Periksa user
+        if (!$user) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'debug' => 'No authenticated user found'
+            ], 401);
+        }
+    
+        $request->validate([
             'name' => 'required|string',
             'price' => 'required|string',
             'phone_number' => 'nullable|string',
@@ -25,31 +35,36 @@ class KostController extends Controller
             'regency' => 'required|string',
             'latitude' => 'nullable|string',
             'longitude' => 'nullable|string',
-            'university' => 'required|string',
-      ]); 
-
-        $kost = Kost::create([
-                'user_id' => $request->user_id,
-                'name' => $request->name,
-                'price' => $request->price,
-                'phone_number' => $request->phone_number,
-                'description' => $request->description,
-                'address' => $request->address,
-                'city' => $request->city,
-                'regency' => $request->regency,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
         ]);
 
+        $kost = Kost::create([
+            'user_id' => $user->id, 
+            'owner' => $user->name,  
+            'name' => $request->name,
+            'price' => $request->price,
+            'phone_number' => $request->phone_number,
+            'description' => $request->description,
+            'address' => $request->address,
+            'city' => $request->city,
+            'regency' => $request->regency,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+        ]);
+
+        
+
+        // Menangani upload gambar
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images-kost'), $imageName);
 
+            // Jika ada gambar sebelumnya, hapus gambar lama
             if ($kost->image && file_exists(public_path('images-kost/' . $kost->image))) {
                 unlink(public_path('images-kost/' . $kost->image));
             }
 
+            // Menyimpan nama gambar ke database
             $kost->image = $imageName;
             $kost->image = url('images-kost/' . $kost->image);
 
@@ -111,8 +126,6 @@ class KostController extends Controller
                 'address' => 'nullable|string',
                 'city' => 'nullable|string',
                 'regency' => 'nullable|string',
-                'latitude' => 'nullable|string',
-                'longitude' => 'nullable|string',
             ]);
 
             $kost->name = $request->name;
@@ -122,8 +135,7 @@ class KostController extends Controller
             $kost->address = $request->address;
             $kost->city = $request->city;
             $kost->regency = $request->regency;
-            $kost->latitude = $request->latitude;
-            $kost->longitude = $request->longitude;
+
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
@@ -151,10 +163,30 @@ class KostController extends Controller
         }
     }
 
+    public function deletekost($id)
+    {
+        $kost = Kost::find($id);
+        if ($kost) {
+            if ($kost->image && file_exists(public_path('images-kost/' . $kost->image))) {
+                unlink(public_path('images-kost/' . $kost->image));
+            }
+
+            $kost->delete();
+
+            return response()->json([
+                'message' => 'Successfully deleted kost!',
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Kost not found',
+            ], 404);
+        }
+    }
+
     public function index()
     {
-        $kosts = Kost::with(['universities' => function($query) {
-            $query->select('universities.id', 'universities.name');
+        $kosts = Kost::with(['universities' => function ($query) {
+            $query->select('universities.id', 'universities.university');
         }])->get();
 
         return response()->json([
@@ -166,8 +198,8 @@ class KostController extends Controller
 
     public function show($id)
     {
-        $kost = Kost::with(['universities' => function($query) {
-            $query->select('universities.id', 'universities.name');
+        $kost = Kost::with(['universities' => function ($query) {
+            $query->select('universities.id', 'universities.university');
         }])->find($id);
 
         if ($kost) {
@@ -182,5 +214,4 @@ class KostController extends Controller
             ], 404);
         }
     }
-
 }

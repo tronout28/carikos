@@ -36,8 +36,8 @@ class UniversityController extends Controller
     {
         $request->validate([
             'university' => 'required|string',
-            'latitude' => 'required|string',
-            'longitude' => 'required|string',
+            'latitude' => 'nullable|string',
+            'longitude' => 'nullable|string',
         ]);
 
         $university = new University([

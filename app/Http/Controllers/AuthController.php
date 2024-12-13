@@ -32,6 +32,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Successfully created user!',
+            'user' => $user,
         ], 201);
     }
 
@@ -60,6 +61,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Successfully created owner!',
+            'owner' => $user,
         ], 201);
     }
 
@@ -122,7 +124,7 @@ class AuthController extends Controller
 
     public function Logout(Request $request)
     {
-        $request->user()->token()->delete();
+        $request->user()->tokens()->delete();
 
         return response()->json([
             'message' => 'Successfully logged out',

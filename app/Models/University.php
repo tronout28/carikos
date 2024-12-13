@@ -14,7 +14,7 @@ class university extends Model
 
     public function kosts()
     {
-        return $this->belongsToMany(Kost::class, 'university_kost', 'university_id', 'kost_id');
+        return $this->belongsToMany(Kost::class, 'university_kosts', 'university_id', 'kost_id');
     }
 
 }
