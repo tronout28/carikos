@@ -10,6 +10,7 @@ class Kost extends Model
         'name',
         'owner',
         'user_id',
+        'kost_type',
         'price',
         'phone_number',
         'image',

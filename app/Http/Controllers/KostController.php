@@ -7,6 +7,7 @@ use App\Models\Kost;
 use App\Models\UniversityKost;
 use App\Models\University;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 
 class KostController extends Controller
@@ -28,6 +29,7 @@ class KostController extends Controller
             'name' => 'required|string',
             'price' => 'required|string',
             'phone_number' => 'nullable|string',
+            'kost_type' => ['required',Rule::in(['kost_reguler','kost_exclusive','kontrakan'])],
             'image' =>  'required|image|mimes:jpeg,png,jpg,gif,svg|max:5000',
             'description' => 'required|string',
             'address' => 'required|string',
@@ -41,6 +43,7 @@ class KostController extends Controller
             'user_id' => $user->id, 
             'owner' => $user->name,  
             'name' => $request->name,
+            'kost_type' => $request->kost_type,
             'price' => $request->price,
             'phone_number' => $request->phone_number,
             'description' => $request->description,
@@ -120,6 +123,7 @@ class KostController extends Controller
             $request->validate([
                 'name' => 'nullable|string',
                 'price' => 'nullable|string',
+                'kost_type' => ['nullable',Rule::in(['kost_reguler','kost_exclusive','kontrakan'])],
                 'phone_number' => 'nullable|string',
                 'image' =>  'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5000',
                 'description' => 'nullable|string',
@@ -129,6 +133,7 @@ class KostController extends Controller
             ]);
 
             $kost->name = $request->name;
+            $kost->kost_type = $request->kost_type;
             $kost->price = $request->price;
             $kost->phone_number = $request->phone_number;
             $kost->description = $request->description;
