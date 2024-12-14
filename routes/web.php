@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\OrderController;
 
 
 Route::get('/', function () {
@@ -24,3 +25,6 @@ Route::get('/images-kost/{filename}', function ($filename) {
 
     return $response;
 });
+
+Route::get('/snap_view/{orderId}', [OrderController::class, 'snapView'])->name('snap.view');
+Route::get('/invoice/{id}', [OrderController::class, 'invoiceView'])->name('invoice.view');
