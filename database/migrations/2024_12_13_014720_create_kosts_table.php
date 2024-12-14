@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('description');
             $table->string('price');
+            $table->enum('kost_type',['kost_reguler','kost_exclusive','kontrakan']);
             $table->string('address');
             $table->string('city');
             $table->string('regency');
