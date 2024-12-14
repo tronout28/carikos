@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\KostController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => '/auth'], function () {
@@ -51,3 +52,10 @@ Route::group(['prefix' => '/kost'], function () {
         Route::delete('/delete/{id}', [KostController::class, 'Deletekost']);
     });
 });
+
+Route::group(['prefix' => '/payment','middleware' => ['auth:sanctum']], function () {
+    Route::post('/checkout', [OrderController::class, 'checkoutKost']);
+});
+
+Route::post('/midtrans-callback', [OrderController::class, 'callback']);
+Route::get('/payment/invoice/{id}', [OrderController::class, 'invoiceView']);
