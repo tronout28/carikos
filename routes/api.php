@@ -9,7 +9,7 @@ use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => '/auth'], function () {
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register-user', [AuthController::class, 'RegisterasUser']);
     Route::post('/register-owner', [AuthController::class, 'RegisterasOwner']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
