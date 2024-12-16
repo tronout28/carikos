@@ -125,6 +125,7 @@ class KostController extends Controller
                 'price' => 'nullable|string',
                 'kost_type' => ['nullable',Rule::in(['kost_reguler','kost_exclusive','kontrakan'])],
                 'phone_number' => 'nullable|string',
+                'status' => ['nullable',Rule::in(['tersedia','penuh'])],
                 'image' =>  'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5000',
                 'description' => 'nullable|string',
                 'address' => 'nullable|string',
@@ -132,14 +133,16 @@ class KostController extends Controller
                 'regency' => 'nullable|string',
             ]);
 
-            $kost->name = $request->name;
-            $kost->kost_type = $request->kost_type;
-            $kost->price = $request->price;
-            $kost->phone_number = $request->phone_number;
-            $kost->description = $request->description;
-            $kost->address = $request->address;
-            $kost->city = $request->city;
-            $kost->regency = $request->regency;
+            $kost->name = $request->name ?? $kost->name;
+            $kost->kost_type = $request->kost_type ?? $kost->kost_type;
+            $kost->price = $request->price ?? $kost->price;
+            $kost->phone_number = $request->phone_number ?? $kost->phone_number;
+            $kost->status = $request->status ?? $kost->status;
+            $kost->description = $request->description ?? $kost->description;
+            $kost->address = $request->address ?? $kost->address;
+            $kost->city = $request->city ?? $kost->city;
+            $kost->regency = $request->regency ?? $kost->regency;
+            $kost->save();
 
 
             if ($request->hasFile('image')) {
@@ -156,6 +159,7 @@ class KostController extends Controller
 
                 $kost->save();
             }
+
 
             return response()->json([
                 'message' => 'Successfully updated kost!',
@@ -218,5 +222,17 @@ class KostController extends Controller
                 'message' => 'Kost not found'
             ], 404);
         }
+    }
+
+    public function getMykosts()
+    {
+        $user = Auth::user();
+        $kosts = Kost::where('user_id', $user->id)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully retrieved your kosts',
+            'data' => $kosts
+        ]);
     }
 }

@@ -26,11 +26,12 @@ class OrderController extends Controller
 
         $request->validate([
             'kost_id' => 'required|exists:kosts,id',
+            'check_in' => 'required|date',
         ]);
 
         $kost = Kost::find($request->kost_id);
-        if (!$kost) {
-            return response()->json(['success' => false, 'message' => 'Kost not found'], 404);
+        if (!$kost || $kost->status !== 'tersedia') {
+            return response()->json(['success' => false, 'message' => 'Kost not found or full'], 404);
         }
 
         $totalPrice = $kost->price;
@@ -38,6 +39,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id' => $user->id,
             'kost_id' => $kost->id,
+            'check_in' => $request->check_in,
             'name' => $user->name,
             'email' => $user->email,
             'phone_number' => $user->phone_number,
@@ -158,5 +160,23 @@ class OrderController extends Controller
             'user' => $user,
             'kost' => $kost,
         ]);
+    }
+
+    public  function getAllInvoice(){
+        $orders = Order::all();
+        return response()->json(['success' => true, 'data' => $orders]);
+    }
+
+    public function getInvoicebyKost($kost_id){
+        $orders = Order::where('kost_id', $kost_id, 'status', 'paid')->get();
+        return response()->json(['success' => true, 'data' => $orders]);
+    }
+
+    public function getInvoicesbyOwner(){
+        $user = auth()->user();
+        $kosts = Kost::where('user_id', $user->id)->get();
+        $kostIds = $kosts->pluck('id');
+        $orders = Order::whereIn('kost_id', $kostIds)->get();
+        return response()->json(['success' => true, 'data' => $orders]);
     }
 }
