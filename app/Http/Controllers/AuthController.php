@@ -83,7 +83,7 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('token')->plainTextToken;
 
 
 
