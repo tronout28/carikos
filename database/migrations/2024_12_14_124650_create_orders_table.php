@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();
+            $table->date('check_in')->nullable();
             $table->bigInteger('total_price')->nullable();
             $table->enum('status', ['paid', 'unpaid','pending'])->default('unpaid');
 

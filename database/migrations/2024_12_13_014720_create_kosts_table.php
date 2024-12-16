@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('city');
             $table->string('regency');
+            $table->enum('status',['tersedia','penuh'])->default('tersedia');
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->timestamps();

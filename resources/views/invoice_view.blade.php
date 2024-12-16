@@ -132,6 +132,10 @@
                     <td>{{ $kost->image }}</td>
                 </tr>
                 <tr>
+                    <th>Check-in Kost</th>
+                    <td>{{ $order->check_in }}</td>
+                </tr>
+                <tr>
                     <th>Nama Kost</th>
                     <td>{{ $kost->name }}</td>
                 </tr>

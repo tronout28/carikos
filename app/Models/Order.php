@@ -14,6 +14,7 @@ class Order extends Model
         'name',
         'email',
         'phone_number',
+        'check_in',
         'total_price',
         'status',
     ];

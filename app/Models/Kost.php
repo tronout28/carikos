@@ -15,6 +15,7 @@ class Kost extends Model
         'phone_number',
         'image',
         'description',
+        'status',
         'address',
         'city',
         'regency',

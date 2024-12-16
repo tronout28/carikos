@@ -50,6 +50,9 @@ Route::group(['prefix' => '/kost'], function () {
         Route::put('/update-kost/{id}', [KostController::class, 'Updatekost']);
         Route::post('/attach-university', [KostController::class, 'Attachuniversity']);
         Route::delete('/delete/{id}', [KostController::class, 'Deletekost']);
+        Route::get('/my-kost', [KostController::class, 'getMykosts']);
+        Route::get('/invoices',[OrderController::class, 'getAllInvoice']);
+        Route::get('/invoice-by-kost/{id}', [OrderController::class, 'getInvoiceByKost']);
     });
 });
 
