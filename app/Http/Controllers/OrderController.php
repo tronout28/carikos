@@ -155,7 +155,7 @@ class OrderController extends Controller
             abort(404, "Kost not found");
         }
 
-        return view('invoice', [
+        return view('invoice_view', [
             'order' => $order,
             'user' => $user,
             'kost' => $kost,
