@@ -23,4 +23,11 @@ class UserController extends Controller {
             'data' => $user
         ]);
     }
+
+    public function whatsapp(){
+        return response()->json([
+            'status' => 'success',
+            'wa_number' => 'https://wa.me/6281338287451'
+        ]);
+    }
 }

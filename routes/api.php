@@ -16,6 +16,7 @@ Route::group(['prefix' => '/auth'], function () {
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
+
     });
 });
 
@@ -40,6 +41,8 @@ Route::group(['prefix' => '/university'], function () {
         Route::delete('/delete/{id}', [UniversityController::class, 'Deleteuniversity']);
     });
 });
+
+Route::get('/whatsapp', [UserController::class, 'whatsapp']);
 
 Route::group(['prefix' => '/kost'], function () {
     Route::get('/', [KostController::class, 'index']);
