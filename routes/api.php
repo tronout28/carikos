@@ -24,6 +24,12 @@ Route::group(['prefix' => '/admin'], function () {
     Route::post('/register-admin', [AdminController::class, 'Registerasadmin']);
     Route::post('/login', [AdminController::class, 'Login']);
     Route::post('/forgot-password', [AdminController::class, 'forgotPassword']);
+
+    //insert kost dari admin
+    Route::post('/insert-kost', [KostController::class, 'Insertkost']);
+    Route::put('/update-kost/{id}', [KostController::class, 'Updatekost']);
+    Route::post('/attach-university', [KostController::class, 'Attachuniversity']);
+    Route::delete('/delete/{id}', [KostController::class, 'Deletekost']);
 });
 
 Route::group(['prefix' => '/user', 'middleware' => ['auth:sanctum']], function () {
